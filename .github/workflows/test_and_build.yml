@@ -17,12 +17,12 @@ jobs:
     - name: Set up MSVC Developer Command Prompt
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Install CMake
-      uses: lukka/get-cmake@v3
-
+    - name: Set up CMake
+      uses: jwlawson/actions-setup-cmake@v1
+    
     - name: Install Ninja (optional, for faster builds)
       uses: seanmiddleditch/gha-setup-ninja@v3
-
+    
     - name: Install LLVM (for clang-tidy)
       uses: KyleMayes/install-llvm-action@v1
       with:
