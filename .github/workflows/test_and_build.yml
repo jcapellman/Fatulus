@@ -8,39 +8,39 @@ on:
 
 jobs:
     build-lint-test:
-    runs-on: windows-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up MSVC Developer Command Prompt
-      uses: ilammy/msvc-dev-cmd@v1
-
-    - name: Set up CMake
-      uses: jwlawson/actions-setup-cmake@v1
-
-    - name: Install Ninja (optional, for faster builds)
-      uses: seanmiddleditch/gha-setup-ninja@v3
-
-    - name: Install LLVM via Chocolatey
-      run: choco install llvm -y
-
-    - name: Add LLVM to PATH
-      run: echo "C:\Program Files\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
-      shell: pwsh
-
-    - name: Configure CMake
-      run: cmake -S . -B build -G "Ninja" -DCMAKE_CXX_STANDARD=14
-
-    - name: Build
-      run: cmake --build build --config Release
-
-    - name: Lint with clang-tidy
-      run: clang-tidy $(git ls-files '*.cpp') -- -std=c++14
-      shell: bash
-
-    - name: Run tests (if you have tests)
-      run: |
-        if exist build\Release\tests.exe (build\Release\tests.exe)
-      shell: cmd
+      runs-on: windows-latest
+  
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+  
+      - name: Set up MSVC Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+  
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+  
+      - name: Install Ninja (optional, for faster builds)
+        uses: seanmiddleditch/gha-setup-ninja@v3
+  
+      - name: Install LLVM via Chocolatey
+        run: choco install llvm -y
+  
+      - name: Add LLVM to PATH
+        run: echo "C:\Program Files\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+        shell: pwsh
+  
+      - name: Configure CMake
+        run: cmake -S . -B build -G "Ninja" -DCMAKE_CXX_STANDARD=14
+  
+      - name: Build
+        run: cmake --build build --config Release
+  
+      - name: Lint with clang-tidy
+        run: clang-tidy $(git ls-files '*.cpp') -- -std=c++14
+        shell: bash
+  
+      - name: Run tests (if you have tests)
+        run: |
+          if exist build\Release\tests.exe (build\Release\tests.exe)
+        shell: cmd
