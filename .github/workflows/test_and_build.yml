@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-lint-test:
+    build-lint-test:
     runs-on: windows-latest
 
     steps:
@@ -19,15 +19,17 @@ jobs:
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v1
-    
+
     - name: Install Ninja (optional, for faster builds)
       uses: seanmiddleditch/gha-setup-ninja@v3
-    
-    - name: Install LLVM (for clang-tidy)
-      uses: KyleMayes/install-llvm-action@v1
-      with:
-        version: "19.0"
-        
+
+    - name: Install LLVM via Chocolatey
+      run: choco install llvm -y
+
+    - name: Add LLVM to PATH
+      run: echo "C:\Program Files\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+      shell: pwsh
+
     - name: Configure CMake
       run: cmake -S . -B build -G "Ninja" -DCMAKE_CXX_STANDARD=14
 
@@ -35,10 +37,10 @@ jobs:
       run: cmake --build build --config Release
 
     - name: Lint with clang-tidy
-      run: |
-        cmake --build build --target clang-tidy
+      run: clang-tidy $(git ls-files '*.cpp') -- -std=c++14
+      shell: bash
 
     - name: Run tests (if you have tests)
       run: |
-        if (Test-Path build\Release\tests.exe) { build\Release\tests.exe }
-      shell: pwsh
+        if exist build\Release\tests.exe (build\Release\tests.exe)
+      shell: cmd
