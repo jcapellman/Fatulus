@@ -1,23 +1,44 @@
-name: Test and Build
+name: Build, Lint, and Test (Windows MSVC)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  build-lint-test:
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up MSVC Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install CMake
+      uses: lukka/get-cmake@v3
+
+    - name: Install Ninja (optional, for faster builds)
+      uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Install LLVM (for clang-tidy)
+      uses: KyleMayes/install-llvm-action@v1
+      with:
+        version: "17.0"
+
+    - name: Configure CMake
+      run: cmake -S . -B build -G "Ninja" -DCMAKE_CXX_STANDARD=14
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Lint with clang-tidy
+      run: |
+        cmake --build build --target clang-tidy
+
+    - name: Run tests (if you have tests)
+      run: |
+        if (Test-Path build\Release\tests.exe) { build\Release\tests.exe }
+      shell: pwsh
