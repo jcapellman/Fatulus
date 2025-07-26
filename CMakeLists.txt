@@ -8,7 +8,6 @@ file(GLOB SOURCES
     "Main.cpp"
     "Game.cpp"
     "Player.cpp"
-    "GameManager.cpp"
 )
 
 add_executable(Fatalus ${SOURCES})
