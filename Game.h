@@ -13,6 +13,7 @@ enum Difficulty {
 struct GameOptions {
 	int GameLength; // in years
 	Difficulty GameDifficulty;
+	int NumPlayers;
 };
 
 class Game {
