@@ -19,6 +19,7 @@ public:
 		return Game(options, players);
 	}
 
+
 	std::optional<Game> LoadGame(std::string fileName) {
 		std::ifstream file;
 
@@ -50,4 +51,31 @@ public:
 
 		return true;
 	}
+
+    std::map<std::string, Game> LoadAllGamesFromPath(const std::string& path) {
+		std::map<std::string, Game> games;
+		namespace fs = std::filesystem;
+
+		for (const auto& entry : fs::directory_iterator(path)) {
+			if (!entry.is_regular_file()) {
+				continue;
+			}
+
+			const std::string& filename = entry.path().string();
+
+			if (entry.path().extension() != GAME_FILE_EXTENSION) {
+				continue;
+			}
+
+			auto loadedGame = LoadGame(filename);
+			
+			if (!loadedGame.has_value()) {
+				continue;
+			}
+
+			games[filename] = loadedGame.value();
+		}
+
+		return games;
+    }
 };
