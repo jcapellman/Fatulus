@@ -1,11 +1,19 @@
 #include "OpenGLLegacyRenderer.h"
+#include <glad/gl.h>
 #include <string>
 
 OpenGLLegacyRenderer::OpenGLLegacyRenderer() {}
 OpenGLLegacyRenderer::~OpenGLLegacyRenderer() {}
 
 bool OpenGLLegacyRenderer::Init(int width, int height, const char* title) {
-    // Your OpenGL initialization code here
+    // Set the clear color to red and configure the viewport and projection for 2D
+    glClearColor(1.0f, 0.0f, 0.0f, 1.0f); // Red background
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, width, height, 0, -1, 1); // 2D top-left origin
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     return true;
 }
 
